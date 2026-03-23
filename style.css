@@ -126,20 +126,45 @@ ul { list-style: none; margin: 0; padding: 0; }
 
 /* ===== SECTION I — HERO ===== */
 .section--hero {
-  min-height: 100vh;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+#game-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  cursor: pointer;
+}
+.hero__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--top-bar-h) + 40px) 20px 60px;
   text-align: center;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
-.hero__content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 32px;
+.hero__overlay > * {
+  pointer-events: auto;
+}
+.hero__overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.hero__overlay.hidden > * {
+  pointer-events: none;
 }
 .hero__dino-img {
   width: 90px;
@@ -160,26 +185,11 @@ ul { list-style: none; margin: 0; padding: 0; }
   color: var(--color-muted);
   margin: 0;
 }
-.hero__game-wrapper {
-  width: 100%;
-  max-width: 800px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-#game-canvas {
-  width: min(800px, calc(100vw - 32px));
-  height: auto;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-  cursor: pointer;
-}
 .hero__hint {
   font-family: var(--font-body);
   font-size: 12px;
   color: var(--color-muted);
-  margin: 12px 0 0;
+  margin: 24px 0 0;
   animation: pulse 2.5s ease-in-out infinite;
 }
 @keyframes pulse {

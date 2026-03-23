@@ -134,9 +134,9 @@
   // ==================== GAME ENGINE ====================
 
   const PIXEL = 2; // each pixel drawn as 2x2
-  const CANVAS_W = 800;
-  const CANVAS_H = 200;
-  const GROUND_Y = 170;
+  let CANVAS_W = 800;
+  let CANVAS_H = 200;
+  let GROUND_Y = 170;
   const GRAVITY = 0.6;
   const JUMP_VEL = -11;
   const INITIAL_SPEED = 6;
@@ -292,6 +292,20 @@
   // -- Game state --
   const canvas = document.getElementById('game-canvas');
   const ctx = canvas.getContext('2d');
+  const overlay = document.getElementById('hero-overlay');
+
+  function resizeCanvas() {
+    const section = document.getElementById('hero');
+    const dpr = window.devicePixelRatio || 1;
+    const w = section.clientWidth;
+    const h = section.clientHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    CANVAS_W = w;
+    CANVAS_H = h;
+    GROUND_Y = h - 60;
+  }
 
   const game = {
     active: false,
@@ -317,6 +331,11 @@
   for (let i = 0; i < 80; i++) {
     game.groundBumps.push({ x: Math.random() * CANVAS_W * 2, w: Math.random() < 0.5 ? 1 : 2 });
   }
+
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+    if (!game.active) drawIdle();
+  });
 
   // -- Palette --
   function pal() {
@@ -564,6 +583,7 @@
           game.highScore = Math.floor(game.score);
           localStorage.setItem('dino-hi', String(game.highScore));
         }
+        showOverlay();
       }
     }
 
@@ -611,8 +631,17 @@
     }
   }
 
+  // -- Show/hide overlay --
+  function hideOverlay() {
+    if (overlay) overlay.classList.add('hidden');
+  }
+  function showOverlay() {
+    if (overlay) overlay.classList.remove('hidden');
+  }
+
   // -- Start game --
   function startGame() {
+    resizeCanvas();
     game.active = true;
     game.over = false;
     game.started = true;
@@ -627,9 +656,7 @@
     game.scoreFlash = 0;
     game.groundX = 0;
 
-    const hint = document.getElementById('game-hint');
-    if (hint) hint.style.display = 'none';
-
+    hideOverlay();
     requestAnimationFrame(gameLoop);
   }
 
@@ -679,6 +706,18 @@
 
   // ==================== INIT ====================
   document.addEventListener('DOMContentLoaded', () => {
+    // Size canvas to viewport
+    resizeCanvas();
+
+    // Spread clouds across full canvas
+    game.clouds = [
+      { x: CANVAS_W * 0.25, y: 30 },
+      { x: CANVAS_W * 0.55, y: 60 },
+      { x: CANVAS_W * 0.8, y: 20 },
+      { x: CANVAS_W * 0.1, y: 80 },
+      { x: CANVAS_W * 0.65, y: 45 },
+    ];
+
     // Draw idle canvas
     drawIdle();
 

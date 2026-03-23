@@ -42,16 +42,14 @@
 
   <!-- SECTION I — ERR_INTERNET_DISCONNECTED -->
   <section class="section section--hero" id="hero">
-    <div class="hero__content" id="hero-content">
+    <canvas id="game-canvas" width="800" height="200"></canvas>
+    <div class="hero__overlay" id="hero-overlay">
       <img src="static/dino.png" alt="Pixel dinosaur" class="hero__dino-img" width="90" height="90">
       <h1 class="hero__title">No internet</h1>
       <p class="hero__subtitle">Try checking the undersea cables or asking Iran.</p>
-    </div>
-    <div class="hero__game-wrapper">
-      <canvas id="game-canvas" width="800" height="200"></canvas>
       <p class="hero__hint" id="game-hint">Press SPACE or tap to start. Just like the good old days.</p>
+      <a href="#" id="buy-btn" class="hero__buy-btn">Buy $DINO</a>
     </div>
-    <a href="#" id="buy-btn" class="hero__buy-btn">Buy $DINO</a>
   </section>
 
   <!-- SECTION II — THIS IS NOT A GAME -->
