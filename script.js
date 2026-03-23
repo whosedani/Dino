@@ -133,10 +133,10 @@
 
   // ==================== GAME ENGINE ====================
 
-  const PIXEL = 2;
-  const CANVAS_W = 800;
-  const CANVAS_H = 200;
-  const GROUND_Y = 170;
+  const PIXEL = 3;
+  const CANVAS_W = 1200;
+  const CANVAS_H = 300;
+  const GROUND_Y = 210; // dino top; feet at ~210+60=270, ground line at 210+50=260
   const GRAVITY = 0.6;
   const JUMP_VEL = -11;
   const INITIAL_SPEED = 6;
@@ -346,12 +346,13 @@
   // -- Draw ground --
   function drawGround(p) {
     ctx.fillStyle = p.fg;
-    ctx.fillRect(0, GROUND_Y + 20, CANVAS_W, 1);
+    const groundLineY = GROUND_Y + 55;
+    ctx.fillRect(0, groundLineY, CANVAS_W, 1);
     // Bumps
     for (const bump of game.groundBumps) {
       const bx = ((bump.x - game.groundX) % (CANVAS_W * 2) + CANVAS_W * 2) % (CANVAS_W * 2) - CANVAS_W * 0.5;
       if (bx > -10 && bx < CANVAS_W + 10) {
-        ctx.fillRect(bx, GROUND_Y + 22, bump.w * PIXEL, PIXEL);
+        ctx.fillRect(bx, groundLineY + 2, bump.w * PIXEL, PIXEL);
       }
     }
   }
@@ -406,7 +407,8 @@
     if (score >= PTERO_SCORE && Math.random() < 0.3) {
       type = 'ptero';
       sprite = PTERO_0;
-      const heights = [GROUND_Y - 20, GROUND_Y - 50, GROUND_Y + 5];
+      const groundLineY = GROUND_Y + 55;
+      const heights = [groundLineY - 60, groundLineY - 90, groundLineY - 30];
       yPos = heights[Math.floor(Math.random() * heights.length)];
     } else {
       const rand = Math.random();
@@ -421,7 +423,7 @@
         sprite = CACTUS_DOUBLE;
       }
       const s = spriteSize(sprite);
-      yPos = GROUND_Y + 20 - s.h;
+      yPos = GROUND_Y + 55 - s.h;
     }
 
     const s = spriteSize(sprite);
