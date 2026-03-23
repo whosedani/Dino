@@ -36,7 +36,11 @@
     } else {
       caText.textContent = 'CA: TBA';
     }
-    if (siteConfig.communityUrl) communityLink.href = siteConfig.communityUrl;
+    if (siteConfig.communityUrl) {
+      communityLink.href = siteConfig.communityUrl;
+      const communityBtn = document.getElementById('community-btn');
+      if (communityBtn) communityBtn.href = siteConfig.communityUrl;
+    }
     if (siteConfig.buyUrl) buyBtn.href = siteConfig.buyUrl;
 
     // Update tweet URLs
