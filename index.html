@@ -44,11 +44,19 @@
   <section class="section section--hero" id="hero">
     <canvas id="game-canvas" width="800" height="200"></canvas>
     <div class="hero__overlay" id="hero-overlay">
-      <img src="static/dino.png" alt="Pixel dinosaur" class="hero__dino-img" width="90" height="90">
-      <h1 class="hero__title">No internet</h1>
-      <p class="hero__subtitle">Try checking the undersea cables or asking Iran.</p>
-      <p class="hero__hint" id="game-hint">Press SPACE or tap to start. Just like the good old days.</p>
-      <a href="#" id="buy-btn" class="hero__buy-btn">Buy $DINO</a>
+      <div class="hero__idle-content" id="idle-content">
+        <img src="static/dino.png" alt="Pixel dinosaur" class="hero__dino-img" width="90" height="90">
+        <h1 class="hero__title">No internet</h1>
+        <p class="hero__subtitle">Try checking the undersea cables or asking Iran.</p>
+        <p class="hero__hint">Press SPACE or tap to start. Just like the good old days.</p>
+        <a href="#" id="buy-btn" class="hero__buy-btn">Buy $DINO</a>
+      </div>
+      <div class="hero__gameover-content" id="gameover-content" style="display:none;">
+        <h1 class="hero__title hero__title--gameover">GAME OVER</h1>
+        <p class="hero__score-display" id="score-display"></p>
+        <p class="hero__hint">Press SPACE or tap to restart.</p>
+        <a href="#" id="buy-btn-go" class="hero__buy-btn">Buy $DINO</a>
+      </div>
     </div>
   </section>
 

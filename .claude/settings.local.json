@@ -7,7 +7,10 @@
       "Bash(git commit:*)",
       "Bash(gh auth:*)",
       "Bash(gh api:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(gh repo:*)",
+      "Bash(npx vercel:*)",
+      "Bash(git push:*)"
     ]
   }
 }

@@ -37,7 +37,11 @@
       caText.textContent = 'CA: TBA';
     }
     if (siteConfig.communityUrl) communityLink.href = siteConfig.communityUrl;
-    if (siteConfig.buyUrl) buyBtn.href = siteConfig.buyUrl;
+    if (siteConfig.buyUrl) {
+      buyBtn.href = siteConfig.buyUrl;
+      const buyBtnGo = document.getElementById('buy-btn-go');
+      if (buyBtnGo) buyBtnGo.href = siteConfig.buyUrl;
+    }
 
     // Update tweet URLs
     const t1 = document.getElementById('tweet-1');
@@ -133,13 +137,13 @@
 
   // ==================== GAME ENGINE ====================
 
-  const PIXEL = 2; // each pixel drawn as 2x2
+  let PIXEL = 3; // dynamic pixel scale
   let CANVAS_W = 800;
   let CANVAS_H = 200;
   let GROUND_Y = 170;
-  const GRAVITY = 0.6;
-  const JUMP_VEL = -11;
-  const INITIAL_SPEED = 6;
+  let GRAVITY = 0.6;
+  let JUMP_VEL = -11;
+  let INITIAL_SPEED = 6;
   const SPEED_INC = 0.001;
   const PTERO_SCORE = 300;
   const NIGHT_SCORE = 500;
@@ -304,7 +308,19 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     CANVAS_W = w;
     CANVAS_H = h;
-    GROUND_Y = h - 60;
+
+    // Scale pixel size based on viewport — bigger sprites on bigger screens
+    // Base: PIXEL=3 at 800px width, scale proportionally
+    PIXEL = Math.max(2, Math.round(w / 260));
+    GROUND_Y = h - 30 - (20 * PIXEL); // ground line with space below
+    GRAVITY = 0.6 * (PIXEL / 3);
+    JUMP_VEL = -11 * (PIXEL / 3);
+    INITIAL_SPEED = 6 * (PIXEL / 3);
+
+    // Update dino Y if not jumping
+    if (game.dino && !game.dino.jumping) {
+      game.dino.y = GROUND_Y;
+    }
   }
 
   const game = {
@@ -376,14 +392,18 @@
 
   // -- Draw score --
   function drawScore(p) {
-    ctx.font = '16px Silkscreen, monospace';
+    const fontSize = Math.max(14, PIXEL * 6);
+    ctx.font = fontSize + 'px Silkscreen, monospace';
     ctx.fillStyle = p.fg;
     ctx.textAlign = 'right';
+
+    const topY = fontSize + 12;
+    const gap = fontSize * 7;
 
     // High score
     if (game.highScore > 0) {
       ctx.globalAlpha = 0.5;
-      ctx.fillText('HI ' + String(game.highScore).padStart(5, '0'), CANVAS_W - 10, 24);
+      ctx.fillText('HI ' + String(game.highScore).padStart(5, '0'), CANVAS_W - 16, topY);
       ctx.globalAlpha = 1;
     }
 
@@ -391,32 +411,11 @@
     if (game.scoreFlash > 0 && Math.floor(game.scoreFlash / 4) % 2 === 0) {
       // flashing — skip draw
     } else {
-      ctx.fillText(String(Math.floor(game.score)).padStart(5, '0'), CANVAS_W - (game.highScore > 0 ? 120 : 10), 24);
+      ctx.fillText(String(Math.floor(game.score)).padStart(5, '0'), CANVAS_W - (game.highScore > 0 ? gap : 16), topY);
     }
   }
 
-  // -- Draw game over --
-  function drawGameOver(p) {
-    ctx.font = '20px Silkscreen, monospace';
-    ctx.fillStyle = p.fg;
-    ctx.textAlign = 'center';
-    ctx.fillText('GAME OVER', CANVAS_W / 2, CANVAS_H / 2 - 10);
-
-    // Restart icon (simple circular arrow)
-    const cx = CANVAS_W / 2, cy = CANVAS_H / 2 + 20;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 12, 0, Math.PI * 1.6);
-    ctx.strokeStyle = p.fg;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    // Arrow head
-    ctx.beginPath();
-    ctx.moveTo(cx + 8, cy - 10);
-    ctx.lineTo(cx + 14, cy - 4);
-    ctx.lineTo(cx + 4, cy - 4);
-    ctx.fillStyle = p.fg;
-    ctx.fill();
-  }
+  // -- Game over is handled by the HTML overlay, not canvas --
 
   // -- Spawn obstacle --
   function spawnObstacle() {
@@ -515,7 +514,7 @@
       }
 
       // -- Update speed --
-      game.speed += SPEED_INC * dt;
+      game.speed += SPEED_INC * (PIXEL / 3) * dt;
 
       // -- Update score --
       game.score += 0.1 * dt * (game.speed / INITIAL_SPEED);
@@ -583,7 +582,7 @@
           game.highScore = Math.floor(game.score);
           localStorage.setItem('dino-hi', String(game.highScore));
         }
-        showOverlay();
+        showOverlay(true);
       }
     }
 
@@ -615,10 +614,7 @@
     // Score
     drawScore(dp);
 
-    // Game over overlay
-    if (game.over) {
-      drawGameOver(dp);
-    }
+    // Game over — overlay is shown via DOM
 
     requestAnimationFrame(gameLoop);
   }
@@ -632,11 +628,23 @@
   }
 
   // -- Show/hide overlay --
+  const idleContent = document.getElementById('idle-content');
+  const gameoverContent = document.getElementById('gameover-content');
+  const scoreDisplay = document.getElementById('score-display');
+
   function hideOverlay() {
     if (overlay) overlay.classList.add('hidden');
   }
-  function showOverlay() {
+  function showOverlay(isGameOver) {
     if (overlay) overlay.classList.remove('hidden');
+    if (isGameOver) {
+      idleContent.style.display = 'none';
+      gameoverContent.style.display = 'flex';
+      scoreDisplay.textContent = 'SCORE: ' + String(Math.floor(game.score)).padStart(5, '0');
+    } else {
+      idleContent.style.display = 'flex';
+      gameoverContent.style.display = 'none';
+    }
   }
 
   // -- Start game --
@@ -647,7 +655,7 @@
     game.started = true;
     game.score = 0;
     game.speed = INITIAL_SPEED;
-    game.dino = { x: 50, y: GROUND_Y, vy: 0, jumping: false, frame: 0, frameTick: 0 };
+    game.dino = { x: CANVAS_W * 0.08, y: GROUND_Y, vy: 0, jumping: false, frame: 0, frameTick: 0 };
     game.obstacles = [];
     game.nightMode = false;
     game.nightTriggered = false;
@@ -674,7 +682,7 @@
     for (const cloud of game.clouds) {
       drawSprite(CLOUD, cloud.x, cloud.y, p.cloud);
     }
-    drawSprite(DINO_RUN_0, 50, GROUND_Y, p.fg);
+    drawSprite(DINO_RUN_0, CANVAS_W * 0.08, GROUND_Y, p.fg);
   }
 
   // -- Input --
