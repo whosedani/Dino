@@ -27,7 +27,7 @@
   function applyConfig() {
     const caText = document.getElementById('ca-text');
     const caDisplay = document.getElementById('ca-display');
-    const communityLink = document.getElementById('community-link');
+    const communityLink = document.getElementById('header-community-btn');
     const buyBtn = document.getElementById('buy-btn');
 
     if (siteConfig.ca) {
@@ -41,7 +41,11 @@
       const communityBtn = document.getElementById('community-btn');
       if (communityBtn) communityBtn.href = siteConfig.communityUrl;
     }
-    if (siteConfig.buyUrl) buyBtn.href = siteConfig.buyUrl;
+    if (siteConfig.buyUrl) {
+      buyBtn.href = siteConfig.buyUrl;
+      const headerBuyBtn = document.getElementById('header-buy-btn');
+      if (headerBuyBtn) headerBuyBtn.href = siteConfig.buyUrl;
+    }
 
     // Update tweet URLs
     const t1 = document.getElementById('tweet-1');

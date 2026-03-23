@@ -87,14 +87,22 @@ ul { list-style: none; margin: 0; padding: 0; }
 .top-bar__right {
   display: flex;
   align-items: center;
+  gap: 8px;
 }
-.top-bar__community {
-  display: flex;
-  align-items: center;
-  color: var(--color-muted);
-  transition: color 0.2s;
+.top-bar__btn {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: var(--color-text);
+  border: 1px solid var(--color-text);
+  padding: 6px 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, color 0.2s;
 }
-.top-bar__community:hover { color: var(--color-text); }
+.top-bar__btn:hover {
+  background: var(--color-text);
+  color: var(--color-base);
+}
 
 /* ===== TOAST ===== */
 .toast {
