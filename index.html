@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DINO — Offline Runner</title>
+  <meta name="description" content="The internet is more fragile than you think. 95% of global traffic flows through undersea cables with zero protection.">
+  <meta property="og:title" content="DINO — Offline Runner">
+  <meta property="og:description" content="The internet is more fragile than you think.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Instrument+Sans:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP BAR — Chrome error bar imitation -->
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <div class="top-bar__dino-icon"></div>
+      <span class="top-bar__logo">DINO</span>
+    </div>
+    <div class="top-bar__ca" id="ca-display" data-ca="">
+      <span class="top-bar__ca-text" id="ca-text">Loading...</span>
+    </div>
+    <div class="top-bar__right">
+      <a href="#" id="community-link" class="top-bar__community" aria-label="Community">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="4" width="20" height="16" rx="4" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="8" cy="12" r="2" fill="currentColor"/>
+          <circle cx="12" cy="12" r="2" fill="currentColor"/>
+          <circle cx="16" cy="12" r="2" fill="currentColor"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">ERR_COPIED_SUCCESSFULLY</div>
+
+  <!-- SECTION I — ERR_INTERNET_DISCONNECTED -->
+  <section class="section section--hero" id="hero">
+    <div class="hero__content" id="hero-content">
+      <img src="static/dino.png" alt="Pixel dinosaur" class="hero__dino-img" width="90" height="90">
+      <h1 class="hero__title">No internet</h1>
+      <p class="hero__subtitle">Try checking the undersea cables or asking Iran.</p>
+    </div>
+    <div class="hero__game-wrapper">
+      <canvas id="game-canvas" width="800" height="200"></canvas>
+      <p class="hero__hint" id="game-hint">Press SPACE or tap to start. Just like the good old days.</p>
+    </div>
+    <a href="#" id="buy-btn" class="hero__buy-btn">Buy $DINO</a>
+  </section>
+
+  <!-- SECTION II — THIS IS NOT A GAME -->
+  <section class="section section--divider" id="divider">
+    <h2 class="divider__title">THIS IS NOT A GAME</h2>
+    <p class="divider__subtitle">the internet is more fragile than you think.</p>
+  </section>
+
+  <!-- SECTION III — THE CABLES -->
+  <section class="section section--cables" id="cables">
+
+    <!-- Block A — 95% stat -->
+    <div class="cables__stat reveal">
+      <span class="cables__stat-number">95%</span>
+      <p class="cables__stat-desc">of all global internet traffic flows through physical glass fiber cables on the ocean floor.</p>
+      <p class="cables__stat-detail">Not satellites. Cables. At 200 feet depth. With zero protection. And Iran just threatened to cut them.</p>
+    </div>
+
+    <!-- Block B — Dependency Grid -->
+    <div class="cables__grid reveal reveal--stagger">
+      <div class="cables__card">
+        <span class="cables__card-country">QATAR</span>
+        <span class="cables__card-percent">99%</span>
+        <span class="cables__card-note">via Gulf cables</span>
+      </div>
+      <div class="cables__card">
+        <span class="cables__card-country">KUWAIT</span>
+        <span class="cables__card-percent">95%</span>
+        <span class="cables__card-note">via Gulf cables</span>
+      </div>
+      <div class="cables__card">
+        <span class="cables__card-country">BAHRAIN</span>
+        <span class="cables__card-percent">95%</span>
+        <span class="cables__card-note">via Gulf routes</span>
+      </div>
+      <div class="cables__card">
+        <span class="cables__card-country">UAE</span>
+        <span class="cables__card-percent">90%</span>
+        <span class="cables__card-note">via Hormuz cables</span>
+      </div>
+      <div class="cables__card">
+        <span class="cables__card-country">SAUDI ARABIA</span>
+        <span class="cables__card-percent">85%</span>
+        <span class="cables__card-note">eastern province</span>
+      </div>
+      <div class="cables__card">
+        <span class="cables__card-country">OMAN</span>
+        <span class="cables__card-percent">80%</span>
+        <span class="cables__card-note">FLAG, EIG, SEA-ME-WE</span>
+      </div>
+      <div class="cables__card">
+        <span class="cables__card-country">INDIA</span>
+        <span class="cables__card-percent">70%</span>
+        <span class="cables__card-note">Europe-bound data</span>
+      </div>
+      <div class="cables__card">
+        <span class="cables__card-country">EU&#8596;ASIA</span>
+        <span class="cables__card-percent">30%</span>
+        <span class="cables__card-note">of ALL global data</span>
+      </div>
+    </div>
+
+    <!-- Block C — ONE CUT -->
+    <div class="cables__cut">
+      <h3 class="cables__cut-title reveal">ONE CUT. AND HERE'S WHAT GOES DARK:</h3>
+      <ul class="cables__cut-list reveal reveal--stagger">
+        <li class="cables__cut-item">
+          <span class="pulse-dot"></span>
+          Banking between Europe and Asia — <strong>FROZEN</strong>
+        </li>
+        <li class="cables__cut-item">
+          <span class="pulse-dot"></span>
+          Crypto exchanges — <strong>OFFLINE</strong>
+        </li>
+        <li class="cables__cut-item">
+          <span class="pulse-dot"></span>
+          Cloud services (AWS, Azure, Google) — <strong>DOWN</strong>
+        </li>
+        <li class="cables__cut-item">
+          <span class="pulse-dot"></span>
+          Stock exchanges London to Singapore — <strong>PARALYZED</strong>
+        </li>
+        <li class="cables__cut-item">
+          <span class="pulse-dot"></span>
+          $10 TRILLION in daily transactions — <strong>GONE</strong>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Block D — NO BACKUP -->
+    <div class="cables__nobackup reveal">
+      <p class="cables__nobackup-text">There is no backup. Satellites handle less than 1% of cable bandwidth. There is no Plan B. The entire digital economy runs through cables a single anchor can destroy in minutes.</p>
+      <p class="cables__nobackup-stats">repair time: 2–4 weeks per cable. specialized ships on earth: 60.</p>
+    </div>
+  </section>
+
+  <!-- SECTION IV — THE SIGNAL -->
+  <section class="section section--signal" id="signal">
+    <h2 class="signal__title">THE SIGNAL</h2>
+    <div class="signal__tweets">
+      <div class="tweet-embed reveal" id="tweet-1" data-tweet-url="https://x.com/Jihooncrypto/status/2035907627197038699">
+        <img src="static/tweet1.png" alt="Tweet about undersea cables" class="tweet-embed__fallback" loading="lazy">
+      </div>
+      <div class="tweet-embed reveal" id="tweet-2" data-tweet-url="https://x.com/sungleeiq/status/2035911789968302576">
+        <img src="static/tweet2.png" alt="Tweet about cable vulnerability" class="tweet-embed__fallback" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION V — HOW TO BUY -->
+  <section class="section section--buy" id="how-to-buy">
+    <h2 class="buy__title">HOW TO BUY</h2>
+    <div class="buy__steps reveal reveal--stagger">
+      <div class="buy__step">
+        <span class="buy__step-num">1</span>
+        <div class="buy__step-cactus"></div>
+        <p class="buy__step-text"><strong>Download Phantom.</strong> Your offline wallet.</p>
+      </div>
+      <div class="buy__step">
+        <span class="buy__step-num">2</span>
+        <div class="buy__step-cactus"></div>
+        <p class="buy__step-text"><strong>Buy SOL.</strong> Before the cables go dark.</p>
+      </div>
+      <div class="buy__step">
+        <span class="buy__step-num">3</span>
+        <div class="buy__step-cactus"></div>
+        <p class="buy__step-text"><strong>Swap for $DINO on pump.fun.</strong></p>
+      </div>
+      <div class="buy__step">
+        <span class="buy__step-num">4</span>
+        <div class="buy__step-cactus"></div>
+        <p class="buy__step-text"><strong>Hold.</strong> When the internet goes down, you'll know why.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER — ERR_CONNECTION_CLOSED -->
+  <footer class="footer">
+    <div class="footer__content">
+      <div class="footer__dino-icon"></div>
+      <span class="footer__error">ERR_INTERNET_DISCONNECTED</span>
+      <span class="footer__tagline">offline runner. on-chain.</span>
+    </div>
+  </footer>
+
+  <!-- Decorative pixel elements scattered across the page -->
+  <div class="decor-cactus decor-cactus--1" aria-hidden="true"></div>
+  <div class="decor-cactus decor-cactus--2" aria-hidden="true"></div>
+  <div class="decor-cloud decor-cloud--1" aria-hidden="true"></div>
+  <div class="decor-cloud decor-cloud--2" aria-hidden="true"></div>
+  <div class="decor-cloud decor-cloud--3" aria-hidden="true"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

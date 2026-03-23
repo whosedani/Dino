@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DINO Admin</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Source Code Pro', 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #00ff41;
+      padding: 40px 20px;
+    }
+    .container { max-width: 600px; margin: 0 auto; }
+    h1 { font-size: 16px; letter-spacing: 2px; margin-bottom: 32px; }
+    .field { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      background: #111;
+      border: 1px solid #222;
+      color: #00ff41;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #00ff41; }
+    input[type="password"] { color: #ff6b35; }
+    .actions { margin-top: 32px; display: flex; gap: 12px; }
+    button {
+      padding: 10px 24px;
+      font-family: inherit;
+      font-size: 12px;
+      border: 1px solid #00ff41;
+      background: transparent;
+      color: #00ff41;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    button:hover { background: #00ff41; color: #0a0a0a; }
+    .status {
+      margin-top: 20px;
+      font-size: 12px;
+      min-height: 20px;
+    }
+    .status--ok { color: #00ff41; }
+    .status--err { color: #ff3333; }
+    .status--loading { color: #666; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>&gt; DINO ADMIN PANEL</h1>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" autocomplete="off">
+    </div>
+    <hr style="border: none; border-top: 1px solid #222; margin: 32px 0;">
+    <div class="field">
+      <label>Contract Address (CA)</label>
+      <input type="text" id="ca" placeholder="Enter CA...">
+    </div>
+    <div class="field">
+      <label>Twitter URL</label>
+      <input type="text" id="twitterUrl" placeholder="https://x.com/...">
+    </div>
+    <div class="field">
+      <label>Community URL</label>
+      <input type="text" id="communityUrl" placeholder="https://t.me/...">
+    </div>
+    <div class="field">
+      <label>Buy URL</label>
+      <input type="text" id="buyUrl" placeholder="https://pump.fun/...">
+    </div>
+    <div class="field">
+      <label>Tweet 1 URL</label>
+      <input type="text" id="tweet1Url" placeholder="https://x.com/.../status/...">
+    </div>
+    <div class="field">
+      <label>Tweet 2 URL</label>
+      <input type="text" id="tweet2Url" placeholder="https://x.com/.../status/...">
+    </div>
+    <div class="actions">
+      <button id="save-btn">SAVE</button>
+      <button id="load-btn">RELOAD</button>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    const fields = ['ca', 'twitterUrl', 'communityUrl', 'buyUrl', 'tweet1Url', 'tweet2Url'];
+    const status = document.getElementById('status');
+
+    function setStatus(msg, type) {
+      status.textContent = msg;
+      status.className = 'status status--' + type;
+    }
+
+    async function loadConfig() {
+      setStatus('Loading...', 'loading');
+      try {
+        const res = await fetch('/api/config');
+        if (!res.ok) throw new Error('Failed to load');
+        const data = await res.json();
+        fields.forEach(f => {
+          const el = document.getElementById(f);
+          if (el && data[f]) el.value = data[f];
+        });
+        setStatus('Config loaded.', 'ok');
+      } catch (e) {
+        setStatus('ERR: ' + e.message, 'err');
+      }
+    }
+
+    async function hashPassword(pw) {
+      const enc = new TextEncoder().encode(pw);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function saveConfig() {
+      const pw = document.getElementById('password').value;
+      if (!pw) { setStatus('ERR: Password required.', 'err'); return; }
+
+      setStatus('Saving...', 'loading');
+      try {
+        const hash = await hashPassword(pw);
+        const body = {};
+        fields.forEach(f => { body[f] = document.getElementById(f).value; });
+
+        const res = await fetch('/api/config', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': hash
+          },
+          body: JSON.stringify(body)
+        });
+
+        if (res.status === 401) { setStatus('ERR: Invalid password.', 'err'); return; }
+        if (!res.ok) throw new Error('Save failed');
+        setStatus('Config saved successfully.', 'ok');
+      } catch (e) {
+        setStatus('ERR: ' + e.message, 'err');
+      }
+    }
+
+    document.getElementById('save-btn').addEventListener('click', saveConfig);
+    document.getElementById('load-btn').addEventListener('click', loadConfig);
+    loadConfig();
+  </script>
+</body>
+</html>
